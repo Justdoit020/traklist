@@ -1,0 +1,51 @@
+.header {
+  position: relative;
+  height: 52px;
+  flex-shrink: 0;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+}
+
+/* macOS traffic lights live in leftmost ~80px */
+.header-drag-region {
+  -webkit-app-region: drag;
+  position: absolute;
+  inset: 0;
+}
+
+.header-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 20px 0 84px;
+  width: 100%;
+  pointer-events: none;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.logo-text {
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+
+.header-badge {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--accent-light);
+  background: rgba(124, 106, 247, 0.15);
+  border: 1px solid rgba(124, 106, 247, 0.25);
+  border-radius: 20px;
+  padding: 2px 9px;
+  letter-spacing: 0.02em;
+}
