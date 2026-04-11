@@ -8,6 +8,17 @@ TARGET_APP="$HOME/Applications/$APP_NAME"
 
 cd "$PROJECT_DIR"
 
+if [[ "${OSTYPE:-}" != darwin* ]]; then
+  echo "Dit script werkt alleen op macOS."
+  exit 1
+fi
+
+if [[ ! -f "$PROJECT_DIR/package.json" ]]; then
+  echo "Geen package.json gevonden in: $PROJECT_DIR"
+  echo "Tip: clone eerst de repo opnieuw in een lege map en start daarna dit script."
+  exit 1
+fi
+
 echo "[1/4] Dependencies controleren..."
 npm install
 
