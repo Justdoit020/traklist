@@ -23,7 +23,16 @@ echo "[1/4] Dependencies controleren..."
 npm install
 
 echo "[2/4] macOS build starten..."
-npm run electron:build:mac
+ARCH="$(uname -m)"
+if [[ "$ARCH" == "arm64" ]]; then
+  BUILD_ARCH="arm64"
+else
+  BUILD_ARCH="x64"
+fi
+
+echo "Bouwen voor architectuur: $BUILD_ARCH"
+CSC_IDENTITY_AUTO_DISCOVERY=false npm run build
+CSC_IDENTITY_AUTO_DISCOVERY=false npx electron-builder --mac dmg zip --$BUILD_ARCH --publish never
 
 echo "[3/4] Nieuwste .dmg zoeken..."
 LATEST_DMG="$(ls -t "$DIST_DIR"/*.dmg 2>/dev/null | head -n 1 || true)"
