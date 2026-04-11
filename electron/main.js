@@ -1,7 +1,6 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const fs = require('fs/promises');
 const path = require('path');
-const { parseFile } = require('music-metadata');
 const isDev = !app.isPackaged;
 
 const AUDIO_EXTENSIONS = new Set(['.mp3', '.wav', '.aac', '.flac', '.m4a', '.ogg', '.aiff', '.alac']);
@@ -32,6 +31,8 @@ function parseNumberTag(value) {
 }
 
 async function parseAudioMetadata(filePath) {
+  // music-metadata is ESM-only in newer versions, so load it dynamically in CommonJS.
+  const { parseFile } = await import('music-metadata');
   const metadata = await parseFile(filePath, { duration: true, skipCovers: true });
   const common = metadata.common || {};
   const format = metadata.format || {};
