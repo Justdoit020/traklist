@@ -339,3 +339,37 @@
     justify-content: flex-start;
   }
 }
+
+@media (max-width: 600px) {
+  .tracklist-header {
+    padding: 14px 16px;
+  }
+
+  .tracklist-meta h2 {
+    font-size: 16px;
+  }
+
+  .tracklist-actions {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .tracklist-actions .btn-icon,
+  .tracklist-actions .btn-secondary {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .track-row {
+    padding: 11px 16px;
+    gap: 10px;
+  }
+
+  .track-meta {
+    min-width: 60px;
+  }
+
+  .library-panel {
+    margin: 10px 12px 16px;
+  }
+}

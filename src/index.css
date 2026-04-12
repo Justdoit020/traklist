@@ -25,6 +25,10 @@ html, body, #root {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Respect the iPhone notch / Dynamic Island */
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+  padding-bottom: env(safe-area-inset-bottom);
 }
 
 ::-webkit-scrollbar { width: 6px; }
@@ -32,7 +36,8 @@ html, body, #root {
 ::-webkit-scrollbar-thumb { background: var(--text-faint); border-radius: 3px; }
 
 button { cursor: pointer; font-family: var(--font); font-size: 14px; }
-input { font-family: var(--font); font-size: 14px; }
+/* font-size ≥ 16px on inputs prevents iOS Safari from auto-zooming */
+input { font-family: var(--font); font-size: 16px; }
 
 .btn-primary {
   display: inline-flex;
@@ -40,6 +45,7 @@ input { font-family: var(--font); font-size: 14px; }
   justify-content: center;
   gap: 6px;
   padding: 10px 22px;
+  min-height: 44px;
   background: var(--accent);
   color: #fff;
   border: none;
@@ -57,6 +63,7 @@ input { font-family: var(--font); font-size: 14px; }
   justify-content: center;
   gap: 6px;
   padding: 9px 18px;
+  min-height: 44px;
   background: var(--surface2);
   color: var(--text);
   border: 1px solid var(--border);
@@ -71,6 +78,7 @@ input { font-family: var(--font); font-size: 14px; }
   align-items: center;
   gap: 6px;
   padding: 8px 14px;
+  min-height: 44px;
   background: var(--surface2);
   color: var(--text-muted);
   border: 1px solid var(--border);
