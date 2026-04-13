@@ -1,7 +1,55 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
+const { app, BrowserWindow, ipcMain, dialog, safeStorage } = require('electron');
 const fs = require('fs/promises');
 const path = require('path');
 const isDev = !app.isPackaged;
+
+// ── Spotify helpers ────────────────────────────────────────────────────────────
+
+const SPOTIFY_TRACKS_PAGE_SIZE = 100;
+
+function extractSpotifyPlaylistId(url) {
+  const match = url.match(/spotify\.com\/playlist\/([a-zA-Z0-9]+)/);
+  return match ? match[1] : null;
+}
+
+async function spotifyGetToken(clientId, clientSecret) {
+  const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64');
+  const res = await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    headers: {
+      Authorization: `Basic ${credentials}`,
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: 'grant_type=client_credentials',
+  });
+  if (!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error_description || `Spotify authenticatie mislukt (${res.status})`);
+  }
+  const data = await res.json();
+  return data.access_token;
+}
+
+async function spotifyFetchAllTrackItems(playlistId, token) {
+  const items = [];
+  let url =
+    `https://api.spotify.com/v1/playlists/${playlistId}/tracks` +
+    `?limit=${SPOTIFY_TRACKS_PAGE_SIZE}&fields=next,items(track(id,name,artists(name),album(name),duration_ms))`;
+
+  while (url) {
+    const res = await fetch(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || `Spotify API fout (${res.status})`);
+    }
+    const data = await res.json();
+    items.push(...(data.items || []));
+    url = data.next || null;
+  }
+  return items;
+}
 
 const AUDIO_EXTENSIONS = new Set(['.mp3', '.wav', '.aac', '.flac', '.m4a', '.ogg', '.aiff', '.alac']);
 
@@ -107,6 +155,83 @@ ipcMain.handle('dialog:openMusicFolder', async () => {
   });
   if (canceled) return null;
   return filePaths[0];
+});
+
+// ── Spotify credentials (encrypted via safeStorage) ──────────────────────────
+
+function getCredsPath() {
+  return path.join(app.getPath('userData'), 'spotify-creds.json');
+}
+
+ipcMain.handle('settings:saveSpotifyCredentials', async (_, { clientId, clientSecret }) => {
+  if (!safeStorage.isEncryptionAvailable()) {
+    throw new Error('Veilige opslag niet beschikbaar op dit systeem.');
+  }
+  const data = {
+    clientId: safeStorage.encryptString(clientId).toString('base64'),
+    clientSecret: safeStorage.encryptString(clientSecret).toString('base64'),
+  };
+  await fs.writeFile(getCredsPath(), JSON.stringify(data), 'utf8');
+});
+
+ipcMain.handle('settings:loadSpotifyCredentials', async () => {
+  try {
+    if (!safeStorage.isEncryptionAvailable()) return { clientId: '', clientSecret: '' };
+    const raw = await fs.readFile(getCredsPath(), 'utf8');
+    const data = JSON.parse(raw);
+    return {
+      clientId: safeStorage.decryptString(Buffer.from(data.clientId, 'base64')),
+      clientSecret: safeStorage.decryptString(Buffer.from(data.clientSecret, 'base64')),
+    };
+  } catch {
+    return { clientId: '', clientSecret: '' };
+  }
+});
+
+// ── Spotify IPC ───────────────────────────────────────────────────────────────
+
+ipcMain.handle('spotify:fetchPlaylist', async (_, { playlistUrl, clientId, clientSecret }) => {
+  const playlistId = extractSpotifyPlaylistId(playlistUrl);
+  if (!playlistId) throw new Error('Geen geldige Spotify playlist URL.');
+
+  const token = await spotifyGetToken(clientId.trim(), clientSecret.trim());
+
+  // Fetch playlist metadata (name)
+  const metaRes = await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}?fields=name`,
+    { headers: { Authorization: `Bearer ${token}` } }
+  );
+  if (!metaRes.ok) {
+    const err = await metaRes.json().catch(() => ({}));
+    throw new Error(err.error?.message || `Kan playlist niet ophalen (${metaRes.status})`);
+  }
+  const meta = await metaRes.json();
+  const playlistName = meta.name || 'Spotify Playlist';
+
+  // Fetch all tracks
+  const rawItems = await spotifyFetchAllTrackItems(playlistId, token);
+
+  let currentSec = 0;
+  const tracks = rawItems
+    .filter((item) => item && item.track && item.track.id)
+    .map((item, i) => {
+      const t = item.track;
+      const durationSec = Math.round((t.duration_ms || 0) / 1000);
+      const start = currentSec;
+      currentSec += durationSec;
+      return {
+        id: i + 1,
+        artist: t.artists.map((a) => a.name).join(', '),
+        title: t.name,
+        label: t.album?.name || null,
+        bpm: null,
+        startSec: start,
+        endSec: currentSec,
+        confidence: 1.0,
+      };
+    });
+
+  return { playlistName, tracks };
 });
 
 ipcMain.handle('library:scan', async (_, folderPath) => {

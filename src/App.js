@@ -51,6 +51,14 @@ export default function App() {
 
   const handleSubmit = useCallback((src) => {
     setSource(src);
+
+    // Spotify playlists already include the track data — skip processing animation
+    if (src.type === 'spotify') {
+      setTracks(src.tracks);
+      setView('results');
+      return;
+    }
+
     setView('processing');
     setProgress(0);
 
