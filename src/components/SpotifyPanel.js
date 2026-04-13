@@ -10,6 +10,7 @@ export default function SpotifyPanel({ onResult }) {
   const [clientSecret, setClientSecret] = useState('');
   const [playlistUrl, setPlaylistUrl] = useState('');
   const [error, setError] = useState('');
+  const [urlError, setUrlError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showCredentials, setShowCredentials] = useState(false);
 
@@ -29,16 +30,14 @@ export default function SpotifyPanel({ onResult }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
+    setUrlError(false);
 
     const url = playlistUrl.trim();
-    const missingField =
-      !clientId.trim() ? 'Voer je Spotify Client ID in.' :
-      !clientSecret.trim() ? 'Voer je Spotify Client Secret in.' :
-      !url ? 'Voer een Spotify playlist URL in.' :
-      !isSpotifyPlaylistUrl(url) ? 'Geen geldige Spotify playlist URL.' :
-      null;
 
-    if (missingField) { setError(missingField); return; }
+    if (!clientId.trim()) { setError('Voer je Spotify Client ID in.'); return; }
+    if (!clientSecret.trim()) { setError('Voer je Spotify Client Secret in.'); return; }
+    if (!url) { setError('Voer een Spotify playlist URL in.'); setUrlError(true); return; }
+    if (!isSpotifyPlaylistUrl(url)) { setError('Geen geldige Spotify playlist URL.'); setUrlError(true); return; }
 
     if (!window.electronAPI?.fetchSpotifyPlaylist) {
       setError('Spotify ophalen werkt alleen in de desktop app.');
@@ -78,10 +77,10 @@ export default function SpotifyPanel({ onResult }) {
       <input
         id="spotify-url"
         type="text"
-        className={`spotify-input ${error && !playlistUrl.trim() ? 'error' : ''}`}
+        className={`spotify-input ${urlError ? 'error' : ''}`}
         placeholder="https://open.spotify.com/playlist/…"
         value={playlistUrl}
-        onChange={(e) => { setPlaylistUrl(e.target.value); setError(''); }}
+        onChange={(e) => { setPlaylistUrl(e.target.value); setError(''); setUrlError(false); }}
         autoComplete="off"
         spellCheck={false}
         disabled={loading}

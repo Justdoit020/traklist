@@ -171,7 +171,11 @@ ipcMain.handle('settings:saveSpotifyCredentials', async (_, { clientId, clientSe
     clientId: safeStorage.encryptString(clientId).toString('base64'),
     clientSecret: safeStorage.encryptString(clientSecret).toString('base64'),
   };
-  await fs.writeFile(getCredsPath(), JSON.stringify(data), 'utf8');
+  // Write atomically (tmp → rename) with restrictive permissions to protect credentials
+  const credsPath = getCredsPath();
+  const tmpPath = `${credsPath}.tmp`;
+  await fs.writeFile(tmpPath, JSON.stringify(data), { encoding: 'utf8', mode: 0o600 });
+  await fs.rename(tmpPath, credsPath);
 });
 
 ipcMain.handle('settings:loadSpotifyCredentials', async () => {
@@ -213,7 +217,7 @@ ipcMain.handle('spotify:fetchPlaylist', async (_, { playlistUrl, clientId, clien
 
   let currentSec = 0;
   const tracks = rawItems
-    .filter((item) => item && item.track && item.track.id)
+    .filter((item) => item && item.track && (item.track.name || item.track.duration_ms))
     .map((item, i) => {
       const t = item.track;
       const durationSec = Math.round((t.duration_ms || 0) / 1000);
@@ -221,8 +225,8 @@ ipcMain.handle('spotify:fetchPlaylist', async (_, { playlistUrl, clientId, clien
       currentSec += durationSec;
       return {
         id: i + 1,
-        artist: t.artists.map((a) => a.name).join(', '),
-        title: t.name,
+        artist: (t.artists || []).map((a) => a.name).join(', ') || 'Onbekende artiest',
+        title: t.name || `Track ${i + 1}`,
         label: t.album?.name || null,
         bpm: null,
         startSec: start,
