@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import { useDropzone } from 'react-dropzone';
 import './UploadZone.css';
 
@@ -22,7 +22,14 @@ function isSupportedPlatform(url) {
   }
 }
 
+function dropZoneTitle(isDragActive, isTouch) {
+  if (isDragActive) return 'Loslaten om te uploaden';
+  if (isTouch) return 'Tik om een bestand te kiezen';
+  return 'Sleep een bestand hierheen';
+}
+
 export default function UploadZone({ onSubmit }) {
+  const isTouch = useMemo(() => typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches, []);
   const [tab, setTab] = useState('file'); // 'file' | 'url'
   const [urlValue, setUrlValue] = useState('');
   const [urlError, setUrlError] = useState('');
@@ -112,7 +119,7 @@ export default function UploadZone({ onSubmit }) {
               ) : (
                 <div className="drop-placeholder">
                   <DropIcon active={isDragActive} />
-                  <span className="drop-title">{isDragActive ? 'Loslaten om te uploaden' : 'Sleep een bestand hierheen'}</span>
+                  <span className="drop-title">{dropZoneTitle(isDragActive, isTouch)}</span>
                   <span className="drop-sub">MP3, WAV, FLAC, AAC, M4A, OGG</span>
                 </div>
               )}

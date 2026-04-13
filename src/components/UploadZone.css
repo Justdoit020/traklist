@@ -186,6 +186,43 @@
   padding: 3px 10px;
 }
 
+/* ── Mobile / touch adjustments ── */
+@media (max-width: 600px) {
+  .upload-zone {
+    padding: 24px 16px;
+    gap: 24px;
+    justify-content: flex-start;
+    padding-top: 32px;
+  }
+
+  .upload-hero h1 {
+    font-size: 20px;
+  }
+
+  .upload-card {
+    max-width: 100%;
+  }
+
+  .dropzone {
+    padding: 28px 16px;
+    min-height: 110px;
+  }
+
+  .file-actions {
+    flex-direction: column;
+  }
+
+  .file-actions .btn-primary,
+  .file-actions .btn-secondary {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .feature-strip {
+    gap: 16px;
+  }
+}
+
 /* Feature strip */
 .feature-strip {
   display: flex;
