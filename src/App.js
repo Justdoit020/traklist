@@ -3,6 +3,7 @@ import Header from './components/Header';
 import UploadZone from './components/UploadZone';
 import Processing from './components/Processing';
 import TrackList from './components/TrackList';
+import SpotifyDownloader from './components/SpotifyDownloader';
 import './App.css';
 
 // Mock tracklist generator – vervang detectTrack() later door echte API-aanroep
@@ -44,10 +45,15 @@ function formatTime(sec) {
 export { formatTime };
 
 export default function App() {
+  const [appMode, setAppMode] = useState('detect'); // 'detect' | 'spotify'
   const [view, setView] = useState('upload'); // 'upload' | 'processing' | 'results'
   const [source, setSource] = useState(null); // { type: 'file'|'url', name, value }
   const [tracks, setTracks] = useState([]);
   const [progress, setProgress] = useState(0);
+
+  const handleModeChange = useCallback((mode) => {
+    setAppMode(mode);
+  }, []);
 
   const handleSubmit = useCallback((src) => {
     setSource(src);
@@ -86,11 +92,12 @@ export default function App() {
 
   return (
     <div className="app">
-      <Header />
+      <Header mode={appMode} onModeChange={handleModeChange} />
       <main className="main">
-        {view === 'upload' && <UploadZone onSubmit={handleSubmit} />}
-        {view === 'processing' && <Processing progress={progress} source={source} />}
-        {view === 'results' && (
+        {appMode === 'spotify' && <SpotifyDownloader />}
+        {appMode === 'detect' && view === 'upload' && <UploadZone onSubmit={handleSubmit} />}
+        {appMode === 'detect' && view === 'processing' && <Processing progress={progress} source={source} />}
+        {appMode === 'detect' && view === 'results' && (
           <TrackList tracks={tracks} source={source} onReset={handleReset} />
         )}
       </main>

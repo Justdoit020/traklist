@@ -23,13 +23,13 @@
   gap: 12px;
   padding: 0 20px 0 84px;
   width: 100%;
-  pointer-events: none;
 }
 
 .logo {
   display: flex;
   align-items: center;
   gap: 9px;
+  pointer-events: none;
 }
 
 .logo-text {
@@ -39,13 +39,36 @@
   color: var(--text);
 }
 
-.header-badge {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--accent-light);
-  background: rgba(124, 106, 247, 0.15);
-  border: 1px solid rgba(124, 106, 247, 0.25);
+/* Nav */
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-left: 16px;
+}
+
+.header-nav-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 13px;
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid transparent;
   border-radius: 20px;
-  padding: 2px 9px;
-  letter-spacing: 0.02em;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color 0.15s, background 0.15s, border-color 0.15s;
+  -webkit-app-region: no-drag;
+}
+
+.header-nav-btn:hover {
+  color: var(--text);
+  background: var(--surface2);
+}
+
+.header-nav-btn.active {
+  color: var(--text);
+  background: var(--surface2);
+  border-color: var(--border);
 }

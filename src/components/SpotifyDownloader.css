@@ -1,0 +1,296 @@
+.spotify-downloader {
+  flex: 1;
+  padding: 32px 24px;
+  max-width: 820px;
+  width: 100%;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ── Hero ── */
+.spotify-hero h1 {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.spotify-hero p {
+  font-size: 14px;
+  color: var(--text-muted);
+}
+
+/* ── Cards ── */
+.spotify-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 20px;
+}
+.spotify-card h2 {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 14px;
+}
+
+/* ── Settings form ── */
+.settings-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 14px;
+}
+.settings-grid label {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.settings-grid input {
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.settings-grid input:focus {
+  border-color: var(--accent);
+}
+.settings-saved {
+  font-size: 12px;
+  color: var(--green);
+  margin-left: 12px;
+}
+.settings-actions {
+  display: flex;
+  align-items: center;
+}
+
+/* ── URL input row ── */
+.url-row {
+  display: flex;
+  gap: 10px;
+}
+.url-row input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  padding: 9px 12px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+.url-row input:focus {
+  border-color: var(--accent);
+}
+.url-row input.error {
+  border-color: #f87171;
+}
+.url-error {
+  font-size: 12px;
+  color: #f87171;
+  margin-top: 6px;
+  display: block;
+}
+
+/* ── Playlist info ── */
+.playlist-info {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+.playlist-cover {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  object-fit: cover;
+  flex-shrink: 0;
+  background: var(--surface2);
+}
+.playlist-cover-placeholder {
+  width: 72px;
+  height: 72px;
+  border-radius: 8px;
+  background: var(--surface2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 28px;
+  flex-shrink: 0;
+}
+.playlist-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.playlist-name {
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
+}
+.playlist-owner {
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.playlist-count {
+  font-size: 12px;
+  color: var(--text-faint);
+}
+
+/* ── Folder selector ── */
+.folder-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+.folder-path {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 8px 12px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ── Download controls ── */
+.download-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+.download-summary {
+  flex: 1;
+  font-size: 13px;
+  color: var(--text-muted);
+}
+.download-summary strong {
+  color: var(--text);
+}
+
+/* ── Track list ── */
+.spotify-track-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 380px;
+  overflow-y: auto;
+}
+.spotify-track-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 12px;
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  min-height: 52px;
+}
+.spotify-track-num {
+  font-size: 12px;
+  color: var(--text-faint);
+  width: 24px;
+  text-align: right;
+  flex-shrink: 0;
+}
+.spotify-track-main {
+  flex: 1;
+  min-width: 0;
+}
+.spotify-track-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spotify-track-artist {
+  font-size: 12px;
+  color: var(--text-muted);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.spotify-track-duration {
+  font-size: 12px;
+  color: var(--text-faint);
+  flex-shrink: 0;
+}
+.spotify-track-status {
+  width: 22px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.status-done { color: var(--green); font-size: 16px; }
+.status-error { color: #f87171; font-size: 16px; }
+.status-spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+.status-queued { color: var(--text-faint); font-size: 12px; }
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* ── Overall progress bar ── */
+.overall-progress {
+  margin-top: 8px;
+}
+.overall-progress-bar {
+  height: 5px;
+  background: var(--surface2);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+.overall-progress-fill {
+  height: 100%;
+  background: #1db954;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* ── Error / info messages ── */
+.spotify-error {
+  font-size: 13px;
+  color: #f87171;
+  background: rgba(248, 113, 113, 0.08);
+  border: 1px solid rgba(248, 113, 113, 0.2);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+.spotify-info {
+  font-size: 13px;
+  color: var(--text-muted);
+  background: var(--surface2);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+}
+.spotify-info a {
+  color: var(--accent-light);
+  text-decoration: none;
+}
+.spotify-info a:hover {
+  text-decoration: underline;
+}
