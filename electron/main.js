@@ -42,7 +42,7 @@ async function spotifyFetchAllTrackItems(playlistId, token) {
     });
     if (!res.ok) {
       const err = await res.json().catch(() => ({}));
-      throw new Error(err.error?.message || `Spotify API fout (${res.status})`);
+      throw new Error(err.error?.message || `Kan playlist tracks niet ophalen (${res.status})`);
     }
     const data = await res.json();
     items.push(...(data.items || []));

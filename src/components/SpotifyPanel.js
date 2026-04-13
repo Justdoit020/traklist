@@ -32,10 +32,10 @@ export default function SpotifyPanel({ onResult }) {
 
     const url = playlistUrl.trim();
     const missingField =
-      !url ? 'Voer een Spotify playlist URL in.' :
-      !isSpotifyPlaylistUrl(url) ? 'Geen geldige Spotify playlist URL.' :
       !clientId.trim() ? 'Voer je Spotify Client ID in.' :
       !clientSecret.trim() ? 'Voer je Spotify Client Secret in.' :
+      !url ? 'Voer een Spotify playlist URL in.' :
+      !isSpotifyPlaylistUrl(url) ? 'Geen geldige Spotify playlist URL.' :
       null;
 
     if (missingField) { setError(missingField); return; }
