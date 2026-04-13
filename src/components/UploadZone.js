@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react';
 import { useDropzone } from 'react-dropzone';
+import SpotifyPanel from './SpotifyPanel';
 import './UploadZone.css';
 
 const SUPPORTED_PLATFORMS = ['youtube.com', 'youtu.be', 'mixcloud.com', 'soundcloud.com'];
@@ -23,7 +24,7 @@ function isSupportedPlatform(url) {
 }
 
 export default function UploadZone({ onSubmit }) {
-  const [tab, setTab] = useState('file'); // 'file' | 'url'
+  const [tab, setTab] = useState('file'); // 'file' | 'url' | 'spotify'
   const [urlValue, setUrlValue] = useState('');
   const [urlError, setUrlError] = useState('');
   const [droppedFile, setDroppedFile] = useState(null);
@@ -69,6 +70,10 @@ export default function UploadZone({ onSubmit }) {
     onSubmit({ type: 'url', name: url, value: url });
   };
 
+  const handleSpotifyResult = ({ playlistName, tracks }) => {
+    onSubmit({ type: 'spotify', name: playlistName, tracks });
+  };
+
   return (
     <div className="upload-zone">
       <div className="upload-hero">
@@ -93,6 +98,14 @@ export default function UploadZone({ onSubmit }) {
             onClick={() => setTab('url')}
           >
             URL
+          </button>
+          <button
+            role="tab"
+            aria-selected={tab === 'spotify'}
+            className={tab === 'spotify' ? 'tab active tab--spotify' : 'tab tab--spotify'}
+            onClick={() => setTab('spotify')}
+          >
+            Spotify
           </button>
         </div>
 
@@ -160,6 +173,12 @@ export default function UploadZone({ onSubmit }) {
               Analyseer mix
             </button>
           </form>
+        )}
+
+        {tab === 'spotify' && (
+          <div className="tab-panel">
+            <SpotifyPanel onResult={handleSpotifyResult} />
+          </div>
         )}
       </div>
 
